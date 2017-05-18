@@ -64,10 +64,10 @@ for (var suit = 1; suit <= 4; suit++) {
 // Durstenfeld shuffle algorithm
 function shuffle(deck){
     for (var i = deck.length - 1; i > 0 ; i--){
-        var j = math.floor(math.random() *(i +1));
-        var temp = deck[];
+        var j = Math.floor(Math.random() *(i +1));
+        var temp = deck[i];
         deck[i] = deck[j];
-        array[j] = temp; 
+        deck[j] = temp; 
     }
     return deck;
 }

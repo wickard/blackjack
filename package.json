@@ -3,3 +3,5 @@
     "lite-server": "^2.3.0"
   }
 }
+
+"dev" : "lite-server"
