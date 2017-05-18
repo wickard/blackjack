@@ -61,7 +61,15 @@ for (var suit = 1; suit <= 4; suit++) {
         deck.push(new Card(card, suitName))
     }
 }
+// Durstenfeld shuffle algorithm
+function shuffle(deck){
+    for (var i = deck.length - 1; i > 0 ; i--){
+        var j = math.floor(math.random() *(i +1));
+        var temp = deck[];
+        deck[i] = deck[j];
+        array[j] = temp; 
+    }
+    return deck;
+}
 
-var player1 = new Player(window.prompt("User name"))
-
-console.log(deck)
+console.log(shuffle(deck))
