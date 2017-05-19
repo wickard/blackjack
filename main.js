@@ -7,7 +7,7 @@ var Player = function(username){
     this.cards = [];
     this.status = 0;
     this.wager = 0;
-    this.total = 0;
+    this.total = 100;
 }
 
 var Card = function(type, suit){
@@ -79,12 +79,25 @@ function Shuffle(deck){
 function AddPlayer(name){
     table.push(new Player(name))
 }
-
-// TODO Ace corner case. 
+ 
 function PlayerTotal(cards){
     var total = 0;
+    var j = 0;
+    var n = 0;
+    for (i = 0; i < cards.length - n; i++){
+        if (cards[i].type==="Ace"){
+            var temp = cards[i];
+            cards.splice(i,1);
+            cards.push(temp);
+            i--;
+            n++;
+        }
+    }
     for (i = 0; i < cards.length; i++){
-        total += cards[i].values[0];
+        if (total > 10 && cards[i].type === "Ace"){
+            j = 1; 
+        }
+        total += cards[i].values[j];
     }
     return total;
 } 
@@ -97,12 +110,21 @@ function Payout(player){
     else return player.wager * 2; 
 } 
 
-var josh = new Player("Josh");
-var bao = new Player("Bao");
+function Deal(number){
+    for(var i = 0; i <table.length; i++){
+        if(table[i].status === 0)
+        for(var j = 0; j < number; j++){
+            var temp = deck.pop();
+            table[i].cards.push(temp);
+        }
+    }
+}
 
-bao.cards = [new Card(7), new Card(6)];
-josh.cards = [new Card("Ace"), new Card(10)];
-josh.wager = 5;
-bao.wager = 5;
+AddPlayer("Dealer");
+AddPlayer("Josh");
+AddPlayer("Bao");
 
-console.log(Payout(josh));
+Shuffle(deck);
+Deal(2);
+
+console.log(table[1]);
