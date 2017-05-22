@@ -103,22 +103,46 @@ function PlayerTotal(cards){
 } 
 
 function Payout(player){
-    //blackjack case
-    if (player.cards.length === 2 && PlayerTotal(player.cards) === 21){
-        return player.wager + player.wager * 1.5;
+    var dealer = table[table.length -1];
+    var payout = player.wager * 2;
+    var pushPayout = player.wager;
+    var bjPayout = player.wager + player.wager * 1.5;
+    if (player.cards.length ===2 && PlayerTotal(player.cards)===21){
+        console.log(player.name + " hit BLACKJACK!");
+        player.total += bjPayout;
+        console.log(player.name + " you currently have " + player.total + " chips");
     }
-    else return player.wager * 2; 
-} 
-
-function Deal(number){
-    for(var i = 0; i <table.length; i++){
-        if(table[i].status === 0)
-        for(var j = 0; j < number; j++){
-            var temp = deck.pop();
-            table[i].cards.push(temp);
-        }
+    else if(player.status === 1 && dealer.status === -1){
+        console.log(player.name + " wins " + payout + "!")
+        player.total += payout;
+        console.log(player.name + " you currently have " + player.total + " chips");
+    }
+    else if (PlayerTotal(player.cards) > PlayerTotal(dealer.cards) && player.status === 1){
+        console.log(player.name + " wins " + payout + "!");
+        player.total += payout;
+        console.log(player.name + " you currently have " + player.total + " chips");
+    }
+    else if(player.status === -1){
+        console.log("Sorry "  + player.name + " you busted.")
+        console.log(player.name + " you currently have " + player.total + " chips");
+    }
+    else if(PlayerTotal(player.cards) === PlayerTotal(dealer.cards)){
+        console.log(player.name + " pushes.");
+        player.total += pushPayout;
+        console.log(player.name + " you currently have " + player.total + " chips");
+    }
+    else{ 
+        console.log("Sorry " + player.name + " you lost.");
+        console.log(player.name + " you currently have " + player.total + " chips");
     }
 }
+    
+function Deal(player, cards){
+    for(var card = 0; card < cards; card++){
+        var newCard = deck.pop();
+        table[player].cards.push(newCard);
+        }
+    }
 
 function Hand(pos){
     var hand = [];
@@ -140,7 +164,7 @@ while(window.confirm("Would you like to add another player?")){
 AddPlayer("Dealer");
 
 
-while(window.confirm("Deal?")){
+do{
 //game 
 
 for(var i = 0; i < table.length - 1; i++){
@@ -149,51 +173,39 @@ for(var i = 0; i < table.length - 1; i++){
 }
 
 Shuffle(deck);
-Deal(2);
-for (var i = 0 ; i < table.length; i++){    
-    while (table[i].status === 0){
-        if ((PlayerTotal(table[i].cards) > 21)){
-               console.log("Bust");
-               table[i].status = -1;
+
+for (players = 0; players < table.length; players++){
+    Deal(players, 2);
+}
+
+for (var player = 0 ; player < table.length; player++){    
+    while (table[player].status === 0){
+        if ((PlayerTotal(table[player].cards) > 21)){
+               console.log(table[player].name +" busts!");
+               table[player].status = -1;
            }
-        else if( window.confirm(table[i].name + " your hand is " + Hand(i) + " would you like to hit it like you can't miss?")){
-           var temp = deck.pop();
-           table[i].cards.push(temp);
+        else if( window.confirm(table[player].name + " your hand is " + Hand(player) + " would you like to hit it like you can't miss?")){
+            Deal(player, 1)
             }
-        else if (table[i].cards.length === 2 && PlayerTotal(table[i].cards) === 21){
+        else if (table[player].cards.length === 2 && PlayerTotal(table[player].cards) === 21){
            console.log("BLACKJACK!");
-           table[i].status = 1;
+           table[player].status = 1;
        }
-        else table[i].status = 1;
+        else table[player].status = 1;
         }
 
     }
 //payouts
-for( var i = 0; i < table.length - 1; i++){
-    if (PlayerTotal(table[i].cards) > PlayerTotal(table[table.length - 1].cards) && table[i].status === 1){
-        console.log(table[i].name + " wins " + Payout(table[i]) + "!")
-        table[i].total += Payout(table[i]);
-        console.log(table[i].name + " you currently have " + table[i].total + " chips");
-    }
-    else if(table[i].status === -1){
-        console.log("Sorry "  + table[i].name + " you busted.")
-        console.log(table[i].name + " you currently have " + table[i].total + " chips");
-    }
-    else if(PlayerTotal(table[i].cards) === PlayerTotal(table[table.length -1].cards)){
-        console.log(table[i].name + " pushes.")
-        table[i].total += table[i].wager;
-        console.log(table[i].name + " you currently have " + table[i].total + " chips");
-    }
-    else{ 
-        console.log("Sorry " + table[i].name + " you lost.");
-        console.log(table[i].name + " you currently have " + table[i].total + " chips");
-    }
+for (var players = 0; players < table.length - 1 ; players++){
+    Payout(table[players]);
 }
+
+//reset player values
 for (var i = 0; i < table.length ; i++){
     table[i].status = 0;
     table[i].cards = [];
 }
-}
+}while(window.confirm("Play again?"));
 }
 
 Main();
