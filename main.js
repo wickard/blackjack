@@ -1,4 +1,3 @@
-console.log("Welcome to Console Blackjack");
 
 var table = [];
 
@@ -80,9 +79,7 @@ function AddPlayer(name){
     table.push(new Player(name))
 }
  
-function PlayerTotal(cards){
-    var total = 0;
-    var j = 0;
+function sort(cards){
     var n = 0;
     for (i = 0; i < cards.length - n; i++){
         if (cards[i].type==="Ace"){
@@ -93,6 +90,11 @@ function PlayerTotal(cards){
             n++;
         }
     }
+}
+function PlayerTotal(cards){
+    sort(cards);
+    var total = 0;
+    var j = 0;
     for (i = 0; i < cards.length; i++){
         if (total > 10 && cards[i].type === "Ace"){
             j = 1; 
@@ -105,15 +107,15 @@ function PlayerTotal(cards){
 function Payout(player){
     var dealer = table[table.length -1];
     var payout = player.wager * 2;
-    var pushPayout = player.wager;
-    var bjPayout = player.wager + player.wager * 1.5;
+    var pushPayout = Number(player.wager);
+    var bjPayout = Number(player.wager) + (player.wager * 1.5);
     if (player.cards.length ===2 && PlayerTotal(player.cards)===21){
-        console.log(player.name + " hit BLACKJACK!");
+        console.log(player.name + " hit BLACKJACK! Wins " + bjPayout);
         player.total += bjPayout;
         console.log(player.name + " you currently have " + player.total + " chips");
     }
     else if(player.status === 1 && dealer.status === -1){
-        console.log(player.name + " wins " + payout + "!")
+        console.log(player.name + " wins " + payout + "!");
         player.total += payout;
         console.log(player.name + " you currently have " + player.total + " chips");
     }
@@ -127,7 +129,7 @@ function Payout(player){
         console.log(player.name + " you currently have " + player.total + " chips");
     }
     else if(PlayerTotal(player.cards) === PlayerTotal(dealer.cards)){
-        console.log(player.name + " pushes.");
+        console.log(player.name + " pushes. Wins " + pushPayout);
         player.total += pushPayout;
         console.log(player.name + " you currently have " + player.total + " chips");
     }
